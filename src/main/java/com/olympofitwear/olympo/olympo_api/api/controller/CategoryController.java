@@ -22,7 +22,7 @@ public class CategoryController {
     public List<Category> findAll() {
         return categoryRepository.findAll();
     }
-    
+
     @GetMapping("{id}")
     public Category findById(@PathVariable UUID id) {
         return categoryRegisterService.findById(id);
