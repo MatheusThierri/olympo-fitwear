@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,7 +13,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Entity
+@Entity(name = "tb_order")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

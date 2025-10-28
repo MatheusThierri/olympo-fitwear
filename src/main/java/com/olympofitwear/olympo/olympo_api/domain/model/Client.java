@@ -26,8 +26,8 @@ public class Client {
     private String cpf;
     private String phone;
 
-    @OneToOne
-    private Address address;
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    private Set<Address> address = new HashSet<>();
 
     @OneToMany(mappedBy = "client")
     private Set<Order> order = new HashSet<>();

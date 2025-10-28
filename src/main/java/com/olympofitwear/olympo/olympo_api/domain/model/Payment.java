@@ -14,7 +14,6 @@ import java.util.UUID;
 @Entity
 public class Payment {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @EqualsAndHashCode.Include
     private UUID id;
 

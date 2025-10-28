@@ -22,6 +22,6 @@ public class Address {
     private String number;
     private String cep;
 
-    @OneToOne
+    @ManyToOne
     private Client client;
 }
