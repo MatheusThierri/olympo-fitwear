@@ -4,10 +4,9 @@ import com.olympofitwear.olympo.olympo_api.domain.model.Category;
 import com.olympofitwear.olympo.olympo_api.domain.repository.CategoryRepository;
 import com.olympofitwear.olympo.olympo_api.domain.service.CategoryRegisterService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,5 +25,22 @@ public class CategoryController {
     @GetMapping("{id}")
     public Category findById(@PathVariable UUID id) {
         return categoryRegisterService.findById(id);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Category create(@RequestBody Category category) {
+        return categoryRegisterService.create(category);
+    }
+
+    @PutMapping("{id}")
+    public Category update(@PathVariable UUID id, Category category) {
+        return categoryRegisterService.update(id, category);
+    }
+
+    @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable UUID id) {
+        categoryRegisterService.delete(id);
     }
 }

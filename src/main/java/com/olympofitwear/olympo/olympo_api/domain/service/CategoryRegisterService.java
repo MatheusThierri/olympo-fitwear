@@ -15,4 +15,17 @@ public class CategoryRegisterService {
     public Category findById(UUID id) {
         return categoryRepository.findById(id).get();
     }
+
+    public Category create(Category category) {
+        return categoryRepository.saveAndFlush(category);
+    }
+
+    public Category update(UUID id, Category category) {
+        category.setId(id);
+        return categoryRepository.saveAndFlush(category);
+    }
+
+    public void delete(UUID id) {
+        categoryRepository.deleteById(id);
+    }
 }

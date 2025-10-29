@@ -4,28 +4,43 @@ import com.olympofitwear.olympo.olympo_api.domain.model.Address;
 import com.olympofitwear.olympo.olympo_api.domain.repository.AddressRepository;
 import com.olympofitwear.olympo.olympo_api.domain.service.AddressRegisterService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/address")
+@RequestMapping("/clients/{clientId}/address")
 public class AddressController {
     private final AddressRegisterService addressRegisterService;
     private final AddressRepository addressRepository;
 
     @GetMapping
-    public List<Address> findAll() {
-        return addressRepository.findAll();
+    public Set<Address> findAllAddress(@PathVariable UUID clientId) {
+        return addressRegisterService.findAllAddress(clientId);
     }
 
-    @GetMapping("{id}")
-    public Address findById(@PathVariable UUID id) {
-        return addressRegisterService.findById(id);
+    @GetMapping("/{addressId}")
+    public Address findById(@PathVariable UUID clientId, @PathVariable UUID addressId) {
+        return addressRegisterService.findById(addressId);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Address create(@PathVariable UUID clientId, @RequestBody Address address) {
+        return addressRegisterService.create(clientId, address);
+    }
+
+    @PutMapping("/{addressId}")
+    public Address update(@PathVariable UUID clientId, @PathVariable UUID addressId, @RequestBody Address address) {
+        return addressRegisterService.update(addressId, address);
+    }
+
+    @DeleteMapping("/{addressId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable UUID clientId, @PathVariable UUID addressId) {
+        addressRegisterService.delete(addressId);
     }
 }
