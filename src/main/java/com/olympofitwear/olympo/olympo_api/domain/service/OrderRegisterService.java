@@ -15,4 +15,13 @@ public class OrderRegisterService {
     public Order findById(UUID id) {
         return orderRepository.findById(id).get();
     }
+
+    public Order update(UUID id, Order order) {
+        order.setId(id);
+        return orderRepository.saveAndFlush(order);
+    }
+
+    public void delete(UUID id) {
+        orderRepository.deleteById(id);
+    }
 }

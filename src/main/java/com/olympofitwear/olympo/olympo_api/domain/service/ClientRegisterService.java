@@ -15,4 +15,13 @@ public class ClientRegisterService {
     public Client findById(UUID id) {
         return clientRepository.findById(id).get();
     }
+
+    public void delete(UUID id) {
+        clientRepository.deleteById(id);
+    }
+
+    public Client update(UUID id, Client client) {
+        client.setId(id);
+        return clientRepository.saveAndFlush(client);
+    }
 }

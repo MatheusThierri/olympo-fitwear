@@ -4,10 +4,7 @@ import com.olympofitwear.olympo.olympo_api.domain.model.Client;
 import com.olympofitwear.olympo.olympo_api.domain.repository.ClientRepository;
 import com.olympofitwear.olympo.olympo_api.domain.service.ClientRegisterService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,5 +24,15 @@ public class ClientController {
     @GetMapping("{id}")
     public Client findById(@PathVariable UUID id) {
         return clientRegisterService.findById(id);
+    }
+
+    @PutMapping("{id}")
+    public Client update(@PathVariable UUID id, @RequestBody Client client) {
+        return clientRegisterService.update(id, client);
+    }
+
+    @DeleteMapping("{id}")
+    public void delete(@PathVariable UUID id) {
+        clientRegisterService.delete(id);
     }
 }

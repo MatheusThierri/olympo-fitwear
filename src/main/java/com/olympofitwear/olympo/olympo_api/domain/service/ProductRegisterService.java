@@ -15,4 +15,13 @@ public class ProductRegisterService {
     public Product findById(UUID id) {
         return productRepository.findById(id).get();
     }
+
+    public Product update(UUID id, Product product) {
+        product.setId(id);
+        return productRepository.saveAndFlush(product);
+    }
+
+    public void delete(UUID id) {
+        productRepository.deleteById(id);
+    }
 }
