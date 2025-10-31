@@ -4,6 +4,8 @@ import com.olympofitwear.olympo.olympo_api.domain.model.Product;
 import com.olympofitwear.olympo.olympo_api.domain.repository.ProductRepository;
 import com.olympofitwear.olympo.olympo_api.domain.service.ProductRegisterService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,21 +19,22 @@ public class ProductController {
     private final ProductRepository productRepository;
 
     @GetMapping
-    public List<Product> findAll() {
-        return productRepository.findAll();
+    public ResponseEntity<List<Product>> findAll() {
+        return ResponseEntity.ok(productRepository.findAll());
     }
 
     @GetMapping("{id}")
-    public Product findById(@PathVariable UUID id) {
-        return productRegisterService.findById(id);
+    public ResponseEntity<Product> findById(@PathVariable UUID id) {
+        return ResponseEntity.ok(productRegisterService.findById(id));
     }
 
     @PutMapping("{id}")
-    public Product update(@PathVariable UUID id, Product product) {
-        return productRegisterService.update(id, product);
+    public ResponseEntity<Product> update(@PathVariable UUID id, Product product) {
+        return ResponseEntity.ok(productRegisterService.update(id, product));
     }
 
     @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable UUID id) {
         productRegisterService.delete(id);
     }

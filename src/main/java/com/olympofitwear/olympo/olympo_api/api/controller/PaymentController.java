@@ -4,6 +4,7 @@ import com.olympofitwear.olympo.olympo_api.domain.model.Order;
 import com.olympofitwear.olympo.olympo_api.domain.model.Payment;
 import com.olympofitwear.olympo.olympo_api.domain.service.OrderRegisterService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,8 +19,8 @@ public class PaymentController {
     private final OrderRegisterService orderRegisterService;
 
     @GetMapping
-    public Payment findById(@PathVariable UUID id) {
+    public ResponseEntity<Payment> findById(@PathVariable UUID id) {
         Order order = orderRegisterService.findById(id);
-        return order.getPayment();
+        return ResponseEntity.ok(order.getPayment());
     }
 }

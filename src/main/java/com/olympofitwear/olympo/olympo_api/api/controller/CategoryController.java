@@ -18,13 +18,13 @@ public class CategoryController {
     private final CategoryRegisterService categoryRegisterService;
     private final CategoryRepository categoryRepository;
 
-    public List<Category> findAll() {
-        return categoryRepository.findAll();
+    public ResponseEntity<List<Category>> findAll() {
+        return ResponseEntity.ok(categoryRepository.findAll());
     }
 
     @GetMapping("{id}")
-    public Category findById(@PathVariable UUID id) {
-        return categoryRegisterService.findById(id);
+    public ResponseEntity<Category> findById(@PathVariable UUID id) {
+        return ResponseEntity.ok(categoryRegisterService.findById(id));
     }
 
     @PostMapping
@@ -34,8 +34,8 @@ public class CategoryController {
     }
 
     @PutMapping("{id}")
-    public Category update(@PathVariable UUID id, Category category) {
-        return categoryRegisterService.update(id, category);
+    public ResponseEntity<Category> update(@PathVariable UUID id, Category category) {
+        return ResponseEntity.ok(categoryRegisterService.update(id, category));
     }
 
     @DeleteMapping("{id}")

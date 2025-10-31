@@ -5,6 +5,7 @@ import com.olympofitwear.olympo.olympo_api.domain.repository.AddressRepository;
 import com.olympofitwear.olympo.olympo_api.domain.service.AddressRegisterService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -18,13 +19,13 @@ public class AddressController {
     private final AddressRepository addressRepository;
 
     @GetMapping
-    public Set<Address> findAllAddress(@PathVariable UUID clientId) {
-        return addressRegisterService.findAllAddress(clientId);
+    public ResponseEntity<Set<Address>> findAllAddress(@PathVariable UUID clientId) {
+        return ResponseEntity.ok(addressRegisterService.findAllAddress(clientId));
     }
 
     @GetMapping("/{addressId}")
-    public Address findById(@PathVariable UUID clientId, @PathVariable UUID addressId) {
-        return addressRegisterService.findById(addressId);
+    public ResponseEntity<Address> findById(@PathVariable UUID clientId, @PathVariable UUID addressId) {
+        return ResponseEntity.ok(addressRegisterService.findById(addressId));
     }
 
     @PostMapping
@@ -34,8 +35,8 @@ public class AddressController {
     }
 
     @PutMapping("/{addressId}")
-    public Address update(@PathVariable UUID clientId, @PathVariable UUID addressId, @RequestBody Address address) {
-        return addressRegisterService.update(addressId, address);
+    public ResponseEntity<Address> update(@PathVariable UUID clientId, @PathVariable UUID addressId, @RequestBody Address address) {
+        return ResponseEntity.ok(addressRegisterService.update(addressId, address));
     }
 
     @DeleteMapping("/{addressId}")
