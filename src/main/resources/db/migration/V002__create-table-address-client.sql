@@ -1,5 +1,5 @@
 CREATE TABLE client (
-    id CHAR(36) PRIMARY KEY,
+    id BINARY(16) NOT NULL PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
     email VARCHAR(200) NOT NULL,
     password VARCHAR(255) NOT NULL,
@@ -8,11 +8,11 @@ CREATE TABLE client (
 );
 
 CREATE TABLE address (
-    id CHAR(36) PRIMARY KEY,
+    id BINARY(16) NOT NULL PRIMARY KEY,
     street VARCHAR(60) NOT NULL,
     neighborhood VARCHAR(40) NOT NULL,
     number VARCHAR(10) NOT NULL,
     cep VARCHAR(20) NOT NULL,
-    client_id CHAR(36) NOT NULL,
+    client_id BINARY(16) NOT NULL,
     FOREIGN KEY (client_id) REFERENCES client (id)
 );

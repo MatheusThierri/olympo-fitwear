@@ -1,5 +1,8 @@
 package com.olympofitwear.olympo.olympo_api.api.controller;
 
+import com.olympofitwear.olympo.olympo_api.api.model.input.ProductModelInput;
+import com.olympofitwear.olympo.olympo_api.api.model.output.ProductRepresentationModel;
+import com.olympofitwear.olympo.olympo_api.assembler.ProductAssembler;
 import com.olympofitwear.olympo.olympo_api.domain.model.Product;
 import com.olympofitwear.olympo.olympo_api.domain.repository.ProductRepository;
 import com.olympofitwear.olympo.olympo_api.domain.service.ProductRegisterService;
@@ -17,23 +20,30 @@ import java.util.UUID;
 public class ProductController {
     private final ProductRegisterService productRegisterService;
     private final ProductRepository productRepository;
+    private final ProductAssembler productAssembler;
 
     @GetMapping
-    public ResponseEntity<List<Product>> findAll() {
-        return ResponseEntity.ok(productRepository.findAll());
+    public ResponseEntity<List<ProductRepresentationModel>> findAll() {
+        return ResponseEntity.ok(productAssembler.toCollectionModel(productRepository.findAll()));
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<Product> findById(@PathVariable UUID id) {
-        return ResponseEntity.ok(productRegisterService.findById(id));
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductRepresentationModel> findById(@PathVariable UUID id) {
+        return ResponseEntity.ok(productAssembler.toModel(productRegisterService.findById(id)));
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<Product> update(@PathVariable UUID id, Product product) {
-        return ResponseEntity.ok(productRegisterService.update(id, product));
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProductRepresentationModel create(@RequestBody ProductModelInput productModelInput) {
+        return productAssembler.toModel(productRegisterService.create(productModelInput));
     }
 
-    @DeleteMapping("{id}")
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductRepresentationModel> update(@PathVariable UUID id, @RequestBody ProductModelInput productModelInput) {
+        return ResponseEntity.ok(productAssembler.toModel(productRegisterService.update(id, productModelInput)));
+    }
+
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable UUID id) {
         productRegisterService.delete(id);

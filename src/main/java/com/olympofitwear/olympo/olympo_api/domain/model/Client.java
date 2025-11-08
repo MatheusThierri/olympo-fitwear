@@ -17,6 +17,7 @@ import java.util.UUID;
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "CHAR(36)")
     @EqualsAndHashCode.Include
     private UUID id;
 

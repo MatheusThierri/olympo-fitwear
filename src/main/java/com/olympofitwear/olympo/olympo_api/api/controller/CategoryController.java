@@ -1,5 +1,8 @@
 package com.olympofitwear.olympo.olympo_api.api.controller;
 
+import com.olympofitwear.olympo.olympo_api.api.model.input.CategoryModelInput;
+import com.olympofitwear.olympo.olympo_api.api.model.output.CategoryRepresentationModel;
+import com.olympofitwear.olympo.olympo_api.assembler.CategoryAssembler;
 import com.olympofitwear.olympo.olympo_api.domain.model.Category;
 import com.olympofitwear.olympo.olympo_api.domain.repository.CategoryRepository;
 import com.olympofitwear.olympo.olympo_api.domain.service.CategoryRegisterService;
@@ -17,28 +20,30 @@ import java.util.UUID;
 public class CategoryController {
     private final CategoryRegisterService categoryRegisterService;
     private final CategoryRepository categoryRepository;
+    private final CategoryAssembler categoryAssembler;
 
-    public ResponseEntity<List<Category>> findAll() {
-        return ResponseEntity.ok(categoryRepository.findAll());
+    @GetMapping
+    public ResponseEntity<List<CategoryRepresentationModel>> findAll() {
+        return ResponseEntity.ok(categoryAssembler.toCollectionModel(categoryRepository.findAll()));
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<Category> findById(@PathVariable UUID id) {
-        return ResponseEntity.ok(categoryRegisterService.findById(id));
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryRepresentationModel> findById(@PathVariable UUID id) {
+        return ResponseEntity.ok(categoryAssembler.toModel(categoryRegisterService.findById(id)));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Category create(@RequestBody Category category) {
-        return categoryRegisterService.create(category);
+    public CategoryRepresentationModel create(@RequestBody CategoryModelInput categoryModelInput) {
+        return categoryAssembler.toModel(categoryRegisterService.create(categoryModelInput));
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<Category> update(@PathVariable UUID id, Category category) {
-        return ResponseEntity.ok(categoryRegisterService.update(id, category));
+    @PutMapping("/{id}")
+    public ResponseEntity<CategoryRepresentationModel> update(@PathVariable UUID id, @RequestBody CategoryModelInput categoryModelInput) {
+        return ResponseEntity.ok(categoryAssembler.toModel(categoryRegisterService.update(id, categoryModelInput)));
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable UUID id) {
         categoryRegisterService.delete(id);

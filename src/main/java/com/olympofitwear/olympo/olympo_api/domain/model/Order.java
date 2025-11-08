@@ -21,12 +21,14 @@ public class Order {
     private UUID id;
 
     private OffsetDateTime orderDate;
+
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
     @ManyToOne
     private Client client;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Payment payment;
 
     @OneToMany(mappedBy = "id.order", cascade = CascadeType.ALL)

@@ -1,5 +1,8 @@
 package com.olympofitwear.olympo.olympo_api.api.controller;
 
+import com.olympofitwear.olympo.olympo_api.api.model.input.OrderModelInput;
+import com.olympofitwear.olympo.olympo_api.api.model.output.OrderRepresentationModel;
+import com.olympofitwear.olympo.olympo_api.assembler.OrderAssembler;
 import com.olympofitwear.olympo.olympo_api.domain.model.Order;
 import com.olympofitwear.olympo.olympo_api.domain.repository.OrderRepository;
 import com.olympofitwear.olympo.olympo_api.domain.service.OrderRegisterService;
@@ -17,23 +20,30 @@ import java.util.UUID;
 public class OrderController {
     private final OrderRegisterService orderRegisterService;
     private final OrderRepository orderRepository;
+    private final OrderAssembler orderAssembler;
 
     @GetMapping
-    public ResponseEntity<List<Order>> findAll() {
-        return ResponseEntity.ok(orderRepository.findAll());
+    public ResponseEntity<List<OrderRepresentationModel>> findAll() {
+        return ResponseEntity.ok(orderAssembler.toCollectionModel(orderRepository.findAll()));
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<Order> findById(@PathVariable UUID id) {
-        return ResponseEntity.ok(orderRegisterService.findById(id));
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderRepresentationModel> findById(@PathVariable UUID id) {
+        return ResponseEntity.ok(orderAssembler.toModel(orderRegisterService.findById(id)));
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<Order> update(@PathVariable UUID id, @RequestBody Order order) {
-        return ResponseEntity.ok(orderRegisterService.update(id, order));
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public OrderRepresentationModel create(@RequestBody OrderModelInput orderModelInput) {
+        return orderAssembler.toModel(orderRegisterService.create(orderModelInput));
     }
 
-    @DeleteMapping("{id}")
+    @PutMapping("/{id}")
+    public ResponseEntity<OrderRepresentationModel> update(@PathVariable UUID id, @RequestBody OrderModelInput orderModelInput) {
+        return ResponseEntity.ok(orderAssembler.toModel(orderRegisterService.update(id, orderModelInput)));
+    }
+
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable UUID id) {
         orderRegisterService.delete(id);

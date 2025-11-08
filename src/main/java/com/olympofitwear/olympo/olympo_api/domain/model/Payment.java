@@ -21,5 +21,6 @@ public class Payment {
 
     @OneToOne
     @MapsId
+    @JoinColumn(name = "id")
     private Order order;
 }
