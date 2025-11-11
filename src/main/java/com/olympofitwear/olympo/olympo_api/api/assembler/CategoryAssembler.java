@@ -1,4 +1,4 @@
-package com.olympofitwear.olympo.olympo_api.assembler;
+package com.olympofitwear.olympo.olympo_api.api.assembler;
 
 import com.olympofitwear.olympo.olympo_api.api.model.input.CategoryModelInput;
 import com.olympofitwear.olympo.olympo_api.api.model.output.CategoryRepresentationModel;
@@ -27,5 +27,9 @@ public class CategoryAssembler {
         return categories.stream()
                          .map(this::toModel)
                          .collect(Collectors.toList());
+    }
+
+    public void toExistingCategory(CategoryModelInput categoryModelInput, Category category) {
+        modelMapper.map(categoryModelInput, category);
     }
 }

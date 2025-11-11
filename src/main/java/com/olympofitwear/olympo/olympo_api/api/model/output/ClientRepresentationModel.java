@@ -11,7 +11,6 @@ public class ClientRepresentationModel {
     private UUID id;
     private String name;
     private String email;
-    private String password;
     private String cpf;
     private String phone;
 }

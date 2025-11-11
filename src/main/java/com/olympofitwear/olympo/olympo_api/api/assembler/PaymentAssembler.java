@@ -1,4 +1,4 @@
-package com.olympofitwear.olympo.olympo_api.assembler;
+package com.olympofitwear.olympo.olympo_api.api.assembler;
 
 import com.olympofitwear.olympo.olympo_api.api.model.output.PaymentRepresentationModel;
 import com.olympofitwear.olympo.olympo_api.domain.model.Payment;

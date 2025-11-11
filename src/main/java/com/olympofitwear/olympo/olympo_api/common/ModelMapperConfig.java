@@ -1,8 +1,11 @@
 package com.olympofitwear.olympo.olympo_api.common;
 
+import com.olympofitwear.olympo.olympo_api.api.model.input.ProductModelInput;
 import com.olympofitwear.olympo.olympo_api.api.model.output.ClientRepresentationModel;
 import com.olympofitwear.olympo.olympo_api.domain.model.Client;
+import com.olympofitwear.olympo.olympo_api.domain.model.Product;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

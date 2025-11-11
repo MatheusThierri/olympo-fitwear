@@ -1,4 +1,4 @@
-package com.olympofitwear.olympo.olympo_api.assembler;
+package com.olympofitwear.olympo.olympo_api.api.assembler;
 
 import com.olympofitwear.olympo.olympo_api.api.model.input.ClientModelInput;
 import com.olympofitwear.olympo.olympo_api.api.model.output.ClientRepresentationModel;
@@ -27,5 +27,9 @@ public class ClientAssembler {
         return clients.stream()
                       .map(this::toModel)
                       .collect(Collectors.toList());
+    }
+
+    public void toExistingClient(ClientModelInput clientModelInput, Client client) {
+        modelMapper.map(clientModelInput, client);
     }
 }

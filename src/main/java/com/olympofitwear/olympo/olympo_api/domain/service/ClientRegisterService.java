@@ -1,11 +1,12 @@
 package com.olympofitwear.olympo.olympo_api.domain.service;
 
 import com.olympofitwear.olympo.olympo_api.api.model.input.ClientModelInput;
-import com.olympofitwear.olympo.olympo_api.assembler.ClientAssembler;
+import com.olympofitwear.olympo.olympo_api.api.assembler.ClientAssembler;
 import com.olympofitwear.olympo.olympo_api.domain.model.Client;
 import com.olympofitwear.olympo.olympo_api.domain.repository.ClientRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -19,21 +20,21 @@ public class ClientRegisterService {
         return clientRepository.findById(id).get();
     }
 
+    @Transactional
+    public Client create(ClientModelInput clientModelInput) {
+        Client client = clientAssembler.toEntity(clientModelInput);
+        return clientRepository.saveAndFlush(client);
+    }
+
+    @Transactional
+    public Client update(UUID id, ClientModelInput clientModelInput) {
+        Client client = findById(id);
+        clientAssembler.toExistingClient(clientModelInput, client);
+        return clientRepository.saveAndFlush(client);
+    }
+
+    @Transactional
     public void delete(UUID id) {
         clientRepository.deleteById(id);
-    }
-
-    public Client create(ClientModelInput clientModelInput) {
-        Client client = new Client();
-        client = clientAssembler.toEntity(clientModelInput);
-        return clientRepository.saveAndFlush(client);
-    }
-
-    public Client update(UUID id, ClientModelInput clientModelInput) {
-        Client client = new Client();
-        client = clientAssembler.toEntity(clientModelInput);
-        client.setId(id);
-
-        return clientRepository.saveAndFlush(client);
     }
 }

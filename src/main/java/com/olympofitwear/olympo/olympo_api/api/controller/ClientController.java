@@ -2,8 +2,7 @@ package com.olympofitwear.olympo.olympo_api.api.controller;
 
 import com.olympofitwear.olympo.olympo_api.api.model.input.ClientModelInput;
 import com.olympofitwear.olympo.olympo_api.api.model.output.ClientRepresentationModel;
-import com.olympofitwear.olympo.olympo_api.assembler.ClientAssembler;
-import com.olympofitwear.olympo.olympo_api.domain.model.Client;
+import com.olympofitwear.olympo.olympo_api.api.assembler.ClientAssembler;
 import com.olympofitwear.olympo.olympo_api.domain.repository.ClientRepository;
 import com.olympofitwear.olympo.olympo_api.domain.service.ClientRegisterService;
 import lombok.AllArgsConstructor;
@@ -11,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,9 +33,12 @@ public class ClientController {
     }
 
     @PostMapping()
-    @ResponseStatus(HttpStatus.CREATED)
-    public ClientRepresentationModel create(@RequestBody ClientModelInput clientModelInput) {
-        return clientAssembler.toModel(clientRegisterService.create(clientModelInput));
+    public ResponseEntity<ClientRepresentationModel> create(@RequestBody ClientModelInput clientModelInput) {
+        ClientRepresentationModel clientRepresentationModel = clientAssembler.toModel(clientRegisterService.create(clientModelInput));
+
+        URI location = URI.create(String.format("/clients/%s", clientRepresentationModel.getId()));
+
+        return ResponseEntity.created(location).body(clientRepresentationModel);
     }
 
     @PutMapping("/{id}")

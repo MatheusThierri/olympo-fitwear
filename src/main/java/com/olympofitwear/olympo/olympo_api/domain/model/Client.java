@@ -28,8 +28,8 @@ public class Client {
     private String phone;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
-    private Set<Address> address = new HashSet<>();
+    private Set<Address> addresses = new HashSet<>();
 
     @OneToMany(mappedBy = "client")
-    private Set<Order> order = new HashSet<>();
+    private Set<Order> orders = new HashSet<>();
 }

@@ -2,8 +2,7 @@ package com.olympofitwear.olympo.olympo_api.api.controller;
 
 import com.olympofitwear.olympo.olympo_api.api.model.input.CategoryModelInput;
 import com.olympofitwear.olympo.olympo_api.api.model.output.CategoryRepresentationModel;
-import com.olympofitwear.olympo.olympo_api.assembler.CategoryAssembler;
-import com.olympofitwear.olympo.olympo_api.domain.model.Category;
+import com.olympofitwear.olympo.olympo_api.api.assembler.CategoryAssembler;
 import com.olympofitwear.olympo.olympo_api.domain.repository.CategoryRepository;
 import com.olympofitwear.olympo.olympo_api.domain.service.CategoryRegisterService;
 import lombok.AllArgsConstructor;
@@ -11,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,9 +33,12 @@ public class CategoryController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public CategoryRepresentationModel create(@RequestBody CategoryModelInput categoryModelInput) {
-        return categoryAssembler.toModel(categoryRegisterService.create(categoryModelInput));
+    public ResponseEntity<CategoryRepresentationModel> create(@RequestBody CategoryModelInput categoryModelInput) {
+        CategoryRepresentationModel categoryRepresentationModel = categoryAssembler.toModel(categoryRegisterService.create(categoryModelInput));
+
+        URI location = URI.create(String.format("/categories/%s", categoryRepresentationModel.getId()));
+
+        return ResponseEntity.created(location).body(categoryRepresentationModel);
     }
 
     @PutMapping("/{id}")

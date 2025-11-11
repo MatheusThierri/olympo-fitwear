@@ -1,11 +1,12 @@
 package com.olympofitwear.olympo.olympo_api.domain.service;
 
 import com.olympofitwear.olympo.olympo_api.api.model.input.CategoryModelInput;
-import com.olympofitwear.olympo.olympo_api.assembler.CategoryAssembler;
+import com.olympofitwear.olympo.olympo_api.api.assembler.CategoryAssembler;
 import com.olympofitwear.olympo.olympo_api.domain.model.Category;
 import com.olympofitwear.olympo.olympo_api.domain.repository.CategoryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -19,17 +20,20 @@ public class CategoryRegisterService {
         return categoryRepository.findById(id).get();
     }
 
+    @Transactional
     public Category create(CategoryModelInput categoryModelInput) {
         Category category = categoryAssembler.toEntity(categoryModelInput);
         return categoryRepository.saveAndFlush(category);
     }
 
+    @Transactional
     public Category update(UUID id, CategoryModelInput categoryModelInput) {
-        Category category = categoryAssembler.toEntity(categoryModelInput);
-        category.setId(id);
+        Category category = findById(id);
+        categoryAssembler.toExistingCategory(categoryModelInput, category);
         return categoryRepository.saveAndFlush(category);
     }
 
+    @Transactional
     public void delete(UUID id) {
         categoryRepository.deleteById(id);
     }

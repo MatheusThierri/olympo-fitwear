@@ -1,10 +1,9 @@
 package com.olympofitwear.olympo.olympo_api.api.controller;
 
+import com.olympofitwear.olympo.olympo_api.api.assembler.OrderAssembler;
 import com.olympofitwear.olympo.olympo_api.api.model.output.PaymentRepresentationModel;
-import com.olympofitwear.olympo.olympo_api.assembler.PaymentAssembler;
+import com.olympofitwear.olympo.olympo_api.api.assembler.PaymentAssembler;
 import com.olympofitwear.olympo.olympo_api.domain.model.Order;
-import com.olympofitwear.olympo.olympo_api.domain.model.Payment;
-import com.olympofitwear.olympo.olympo_api.domain.repository.OrderRepository;
 import com.olympofitwear.olympo.olympo_api.domain.service.OrderRegisterService;
 import com.olympofitwear.olympo.olympo_api.domain.service.PaymentRegisterService;
 import lombok.AllArgsConstructor;
@@ -12,32 +11,36 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.UUID;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/orders/{orderId}/payment")
+@RequestMapping("/clients/{clientId}/orders/{orderId}/payment")
 public class PaymentController {
     private final OrderRegisterService orderRegisterService;
     private final PaymentAssembler paymentAssembler;
     private final PaymentRegisterService paymentRegisterService;
+    private final OrderAssembler orderAssembler;
 
     @GetMapping
-    public ResponseEntity<PaymentRepresentationModel> findById(@PathVariable UUID orderId) {
-        Order order = orderRegisterService.findById(orderId);
+    public ResponseEntity<PaymentRepresentationModel> findById(@PathVariable UUID clientId, @PathVariable UUID orderId) {
+        Order order = orderRegisterService.findById(clientId, orderId);
         return ResponseEntity.ok(paymentAssembler.toModel(order.getPayment()));
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public PaymentRepresentationModel create(@PathVariable UUID orderId) {
-        Order order = paymentRegisterService.create(orderId);
-        return paymentAssembler.toModel(order.getPayment());
+    public ResponseEntity<PaymentRepresentationModel> create(@PathVariable UUID clientId, @PathVariable UUID orderId) {
+        Order order = paymentRegisterService.create(clientId, orderId);
+
+        URI location = URI.create(String.format("/clients/%s/orders/%s/payment", clientId, orderId));
+
+        return ResponseEntity.created(location).body(paymentAssembler.toModel(order.getPayment()));
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable UUID orderId) {
-        paymentRegisterService.delete(orderId);
+    public void delete(@PathVariable UUID clientId, @PathVariable UUID orderId) {
+        paymentRegisterService.delete(clientId, orderId);
     }
 }

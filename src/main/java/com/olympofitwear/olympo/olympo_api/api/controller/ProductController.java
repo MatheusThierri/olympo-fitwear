@@ -2,7 +2,8 @@ package com.olympofitwear.olympo.olympo_api.api.controller;
 
 import com.olympofitwear.olympo.olympo_api.api.model.input.ProductModelInput;
 import com.olympofitwear.olympo.olympo_api.api.model.output.ProductRepresentationModel;
-import com.olympofitwear.olympo.olympo_api.assembler.ProductAssembler;
+import com.olympofitwear.olympo.olympo_api.api.assembler.ProductAssembler;
+import com.olympofitwear.olympo.olympo_api.domain.model.Category;
 import com.olympofitwear.olympo.olympo_api.domain.model.Product;
 import com.olympofitwear.olympo.olympo_api.domain.repository.ProductRepository;
 import com.olympofitwear.olympo.olympo_api.domain.service.ProductRegisterService;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,9 +35,12 @@ public class ProductController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ProductRepresentationModel create(@RequestBody ProductModelInput productModelInput) {
-        return productAssembler.toModel(productRegisterService.create(productModelInput));
+    public ResponseEntity<ProductRepresentationModel> create(@RequestBody ProductModelInput productModelInput) {
+        ProductRepresentationModel productRepresentationModel = productAssembler.toModel(productRegisterService.create(productModelInput));
+
+        URI location = URI.create(String.format("/products/%s", productRepresentationModel.getId()));
+
+        return ResponseEntity.created(location).body(productRepresentationModel);
     }
 
     @PutMapping("/{id}")

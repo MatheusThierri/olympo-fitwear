@@ -10,5 +10,4 @@ public class AddressModelInput {
     private String neighborhood;
     private String number;
     private String cep;
-    private ClientIdModelInput client;
 }

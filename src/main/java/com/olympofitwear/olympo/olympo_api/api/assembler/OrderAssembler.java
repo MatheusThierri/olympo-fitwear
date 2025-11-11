@@ -1,9 +1,10 @@
-package com.olympofitwear.olympo.olympo_api.assembler;
+package com.olympofitwear.olympo.olympo_api.api.assembler;
 
 import com.olympofitwear.olympo.olympo_api.api.model.input.OrderModelInput;
 import com.olympofitwear.olympo.olympo_api.api.model.output.OrderRepresentationModel;
 import com.olympofitwear.olympo.olympo_api.domain.model.Order;
 import lombok.AllArgsConstructor;
+import org.aspectj.weaver.ast.Or;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -27,5 +28,9 @@ public class OrderAssembler {
         return orders.stream()
                 .map(this::toModel)
                 .collect(Collectors.toList());
+    }
+
+    public void toExistingOrder(OrderModelInput orderModelInput, Order order) {
+        modelMapper.map(orderModelInput, order);
     }
 }

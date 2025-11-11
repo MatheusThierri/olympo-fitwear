@@ -1,4 +1,4 @@
-package com.olympofitwear.olympo.olympo_api.assembler;
+package com.olympofitwear.olympo.olympo_api.api.assembler;
 
 import com.olympofitwear.olympo.olympo_api.api.model.input.ProductModelInput;
 import com.olympofitwear.olympo.olympo_api.api.model.output.ProductRepresentationModel;
@@ -27,5 +27,9 @@ public class ProductAssembler {
         return products.stream()
                        .map(this::toModel)
                        .collect(Collectors.toList());
+    }
+
+    public void toExistingProduct(ProductModelInput productModelInput, Product product) {
+        modelMapper.map(productModelInput, product);
     }
 }

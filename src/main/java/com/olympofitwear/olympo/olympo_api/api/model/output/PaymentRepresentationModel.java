@@ -1,6 +1,5 @@
 package com.olympofitwear.olympo.olympo_api.api.model.output;
 
-import com.olympofitwear.olympo.olympo_api.domain.model.Order;
 import lombok.Getter;
 import lombok.Setter;
 
