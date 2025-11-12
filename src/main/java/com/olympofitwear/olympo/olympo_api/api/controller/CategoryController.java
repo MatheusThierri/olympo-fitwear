@@ -5,6 +5,7 @@ import com.olympofitwear.olympo.olympo_api.api.model.output.CategoryRepresentati
 import com.olympofitwear.olympo.olympo_api.api.assembler.CategoryAssembler;
 import com.olympofitwear.olympo.olympo_api.domain.repository.CategoryRepository;
 import com.olympofitwear.olympo.olympo_api.domain.service.CategoryRegisterService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoryRepresentationModel> create(@RequestBody CategoryModelInput categoryModelInput) {
+    public ResponseEntity<CategoryRepresentationModel> create(@Valid @RequestBody CategoryModelInput categoryModelInput) {
         CategoryRepresentationModel categoryRepresentationModel = categoryAssembler.toModel(categoryRegisterService.create(categoryModelInput));
 
         URI location = URI.create(String.format("/categories/%s", categoryRepresentationModel.getId()));
@@ -42,7 +43,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryRepresentationModel> update(@PathVariable UUID id, @RequestBody CategoryModelInput categoryModelInput) {
+    public ResponseEntity<CategoryRepresentationModel> update(@PathVariable UUID id, @Valid @RequestBody CategoryModelInput categoryModelInput) {
         return ResponseEntity.ok(categoryAssembler.toModel(categoryRegisterService.update(id, categoryModelInput)));
     }
 

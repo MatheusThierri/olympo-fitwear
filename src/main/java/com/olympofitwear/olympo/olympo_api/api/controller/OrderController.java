@@ -5,6 +5,7 @@ import com.olympofitwear.olympo.olympo_api.api.model.output.OrderRepresentationM
 import com.olympofitwear.olympo.olympo_api.api.assembler.OrderAssembler;
 import com.olympofitwear.olympo.olympo_api.domain.repository.OrderRepository;
 import com.olympofitwear.olympo.olympo_api.domain.service.OrderRegisterService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderRepresentationModel> create(@PathVariable UUID clientId, @RequestBody OrderModelInput orderModelInput) {
+    public ResponseEntity<OrderRepresentationModel> create(@PathVariable UUID clientId, @Valid @RequestBody OrderModelInput orderModelInput) {
         OrderRepresentationModel orderRepresentationModel = orderAssembler.toModel(orderRegisterService.create(clientId, orderModelInput));
 
         URI location = URI.create(String.format("/clients/%s/orders/%s", clientId, orderRepresentationModel.getId()));
@@ -42,7 +43,7 @@ public class OrderController {
     }
 
     @PutMapping("/{orderId}")
-    public ResponseEntity<OrderRepresentationModel> update(@PathVariable UUID clientId, @PathVariable UUID orderId, @RequestBody OrderModelInput orderModelInput) {
+    public ResponseEntity<OrderRepresentationModel> update(@PathVariable UUID clientId, @PathVariable UUID orderId, @Valid @RequestBody OrderModelInput orderModelInput) {
         return ResponseEntity.ok(orderAssembler.toModel(orderRegisterService.update(clientId, orderId, orderModelInput)));
     }
 

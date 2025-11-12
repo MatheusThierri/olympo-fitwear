@@ -2,6 +2,7 @@ package com.olympofitwear.olympo.olympo_api.domain.service;
 
 import com.olympofitwear.olympo.olympo_api.api.model.input.AddressModelInput;
 import com.olympofitwear.olympo.olympo_api.api.assembler.AddressAssembler;
+import com.olympofitwear.olympo.olympo_api.domain.exception.DomainException;
 import com.olympofitwear.olympo.olympo_api.domain.model.Address;
 import com.olympofitwear.olympo.olympo_api.domain.model.Client;
 import com.olympofitwear.olympo.olympo_api.domain.repository.AddressRepository;
@@ -20,45 +21,58 @@ public class AddressRegisterService {
     private final AddressAssembler addressAssembler;
 
     public List<Address> findAllAddresses(UUID clientId) {
-        return addressRepository.findByClientId(clientId);
+        Client client = clientRegisterService.findById(clientId);
+
+        return addressRepository.findByClientId(client.getId());
     }
 
     public Address findById(UUID clientId, UUID addressId) {
-        Address address = addressRepository.findById(addressId).get();
-        if (!address.getClient().getId().equals(clientId)) {
-            System.out.println("Address not found for this client");
-        }
+        Client client = clientRegisterService.findById(clientId);
+
+        Address address = findValidAddress(client.getId(), addressId);
+
         return address;
     }
 
     @Transactional
     public Address create(UUID id, AddressModelInput addressModelInput) {
         Client client = clientRegisterService.findById(id);
+
         Address address = addressAssembler.toEntity(addressModelInput);
         client.getAddresses().add(address);
         address.setClient(client);
+
         return addressRepository.saveAndFlush(address);
     }
 
     @Transactional
     public Address update(UUID clientId, UUID addressId, AddressModelInput addressModelInput) {
-        Address address = addressRepository.findById(addressId).get();
-        if (!address.getClient().getId().equals(clientId)) {
-            System.out.println("Address not found for this client");
-        }
         Client client = clientRegisterService.findById(clientId);
+
+        Address address = findValidAddress(clientId, addressId);
         address.setClient(client);
         address.setId(addressId);
         addressAssembler.toExistingAddress(addressModelInput, address);
+
         return addressRepository.saveAndFlush(address);
     }
 
     @Transactional
     public void delete(UUID clientId, UUID addressId) {
-        Address address = addressRepository.findById(addressId).get();
+        Client client = clientRegisterService.findById(clientId);
+
+        Address address = findValidAddress(client.getId(), addressId);
+
+        addressRepository.delete(address);
+    }
+
+    private Address findValidAddress(UUID clientId, UUID addressId) {
+        Address address = addressRepository.findById(addressId).orElseThrow(() -> new DomainException("Address not found with ID: " + addressId));
+
         if (!address.getClient().getId().equals(clientId)) {
-            System.out.println("Address not found for this client");
+            throw new DomainException("Address not found for this client with ID: " + clientId);
         }
-        addressRepository.deleteById(addressId);
+
+        return address;
     }
 }

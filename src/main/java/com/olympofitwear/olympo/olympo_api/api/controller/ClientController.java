@@ -5,6 +5,7 @@ import com.olympofitwear.olympo.olympo_api.api.model.output.ClientRepresentation
 import com.olympofitwear.olympo.olympo_api.api.assembler.ClientAssembler;
 import com.olympofitwear.olympo.olympo_api.domain.repository.ClientRepository;
 import com.olympofitwear.olympo.olympo_api.domain.service.ClientRegisterService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class ClientController {
     }
 
     @PostMapping()
-    public ResponseEntity<ClientRepresentationModel> create(@RequestBody ClientModelInput clientModelInput) {
+    public ResponseEntity<ClientRepresentationModel> create(@Valid @RequestBody ClientModelInput clientModelInput) {
         ClientRepresentationModel clientRepresentationModel = clientAssembler.toModel(clientRegisterService.create(clientModelInput));
 
         URI location = URI.create(String.format("/clients/%s", clientRepresentationModel.getId()));
@@ -42,7 +43,7 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClientRepresentationModel> update(@PathVariable UUID id, @RequestBody ClientModelInput clientModelInput) {
+    public ResponseEntity<ClientRepresentationModel> update(@PathVariable UUID id, @Valid @RequestBody ClientModelInput clientModelInput) {
         return ResponseEntity.ok(clientAssembler.toModel(clientRegisterService.update(id, clientModelInput)));
     }
 

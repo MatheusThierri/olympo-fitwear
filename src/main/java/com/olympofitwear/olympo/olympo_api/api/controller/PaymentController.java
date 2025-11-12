@@ -6,6 +6,7 @@ import com.olympofitwear.olympo.olympo_api.api.assembler.PaymentAssembler;
 import com.olympofitwear.olympo.olympo_api.domain.model.Order;
 import com.olympofitwear.olympo.olympo_api.domain.service.OrderRegisterService;
 import com.olympofitwear.olympo.olympo_api.domain.service.PaymentRegisterService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,6 @@ public class PaymentController {
     private final OrderRegisterService orderRegisterService;
     private final PaymentAssembler paymentAssembler;
     private final PaymentRegisterService paymentRegisterService;
-    private final OrderAssembler orderAssembler;
 
     @GetMapping
     public ResponseEntity<PaymentRepresentationModel> findById(@PathVariable UUID clientId, @PathVariable UUID orderId) {

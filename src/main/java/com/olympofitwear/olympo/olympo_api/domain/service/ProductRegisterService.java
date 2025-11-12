@@ -2,6 +2,7 @@ package com.olympofitwear.olympo.olympo_api.domain.service;
 
 import com.olympofitwear.olympo.olympo_api.api.model.input.ProductModelInput;
 import com.olympofitwear.olympo.olympo_api.api.assembler.ProductAssembler;
+import com.olympofitwear.olympo.olympo_api.domain.exception.DomainException;
 import com.olympofitwear.olympo.olympo_api.domain.model.Category;
 import com.olympofitwear.olympo.olympo_api.domain.model.Product;
 import com.olympofitwear.olympo.olympo_api.domain.repository.ProductRepository;
@@ -19,12 +20,13 @@ public class ProductRegisterService {
     private final ProductAssembler productAssembler;
 
     public Product findById(UUID id) {
-        return productRepository.findById(id).get();
+        return productRepository.findById(id).orElseThrow(() -> new DomainException("Product not found with ID: " + id));
     }
 
     @Transactional
     public Product update(UUID id, ProductModelInput productModelInput) {
         Product product = findById(id);
+
         Category category = categoryRegisterService.findById(productModelInput.getCategory().getId());
         product.setCategory(category);
         productAssembler.toExistingProduct(productModelInput, product);
@@ -43,6 +45,8 @@ public class ProductRegisterService {
 
     @Transactional
     public void delete(UUID id) {
-        productRepository.deleteById(id);
+        Product product = findById(id);
+
+        productRepository.delete(product);
     }
 }

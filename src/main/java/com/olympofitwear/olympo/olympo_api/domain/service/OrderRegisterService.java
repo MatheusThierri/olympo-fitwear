@@ -2,6 +2,7 @@ package com.olympofitwear.olympo.olympo_api.domain.service;
 
 import com.olympofitwear.olympo.olympo_api.api.model.input.OrderModelInput;
 import com.olympofitwear.olympo.olympo_api.api.assembler.OrderAssembler;
+import com.olympofitwear.olympo.olympo_api.domain.exception.DomainException;
 import com.olympofitwear.olympo.olympo_api.domain.model.Client;
 import com.olympofitwear.olympo.olympo_api.domain.model.Order;
 import com.olympofitwear.olympo.olympo_api.domain.model.OrderStatus;
@@ -22,21 +23,25 @@ public class OrderRegisterService {
     private final ClientRegisterService clientRegisterService;
 
     public List<Order> findAll(UUID clientId) {
-        return orderRepository.findByClientId(clientId);
+        Client client = clientRegisterService.findById(clientId);
+
+        return orderRepository.findByClientId(client.getId());
     }
 
     public Order findById(UUID clientId, UUID orderId) {
-        Order order = orderRepository.findById(orderId).get();
-        if (!order.getClient().getId().equals(clientId)) {
-            System.out.println("Order not found for this client");
-        }
+        Client client = clientRegisterService.findById(clientId);
+
+        Order order = findValidOrder(client.getId(), orderId);
 
         return order;
     }
 
     @Transactional
     public Order update(UUID clientId, UUID orderId, OrderModelInput orderModelInput) {
-        Order order = findById(clientId, orderId);
+        Client client = clientRegisterService.findById(clientId);
+
+        Order order = findById(client.getId(), orderId);
+
         orderAssembler.toExistingOrder(orderModelInput, order);
 
         return orderRepository.saveAndFlush(order);
@@ -44,9 +49,9 @@ public class OrderRegisterService {
 
     @Transactional
     public Order create(UUID clientId, OrderModelInput orderModelInput) {
-        Order order = orderAssembler.toEntity(orderModelInput);
         Client client = clientRegisterService.findById(clientId);
 
+        Order order = orderAssembler.toEntity(orderModelInput);
         order.setOrderDate(OffsetDateTime.now());
         order.setOrderStatus(OrderStatus.WAITING_PAYMENT);
         order.setClient(client);
@@ -56,11 +61,20 @@ public class OrderRegisterService {
 
     @Transactional
     public void delete(UUID clientId, UUID orderId) {
-        Order order = orderRepository.findById(orderId).get();
+        Client client = clientRegisterService.findById(clientId);
+
+        Order order = findValidOrder(client.getId(), orderId);
+
+        orderRepository.delete(order);
+    }
+
+    private Order findValidOrder(UUID clientId, UUID orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new DomainException("Order not found with ID: " + orderId));
+
         if (!order.getClient().getId().equals(clientId)) {
-            System.out.println("Order not found for this client");
+            throw new DomainException("Order not found for this client with ID: " + clientId);
         }
 
-        orderRepository.deleteById(orderId);
+        return order;
     }
 }

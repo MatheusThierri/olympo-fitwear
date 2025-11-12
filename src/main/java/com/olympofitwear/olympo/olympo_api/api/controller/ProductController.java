@@ -7,6 +7,7 @@ import com.olympofitwear.olympo.olympo_api.domain.model.Category;
 import com.olympofitwear.olympo.olympo_api.domain.model.Product;
 import com.olympofitwear.olympo.olympo_api.domain.repository.ProductRepository;
 import com.olympofitwear.olympo.olympo_api.domain.service.ProductRegisterService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductRepresentationModel> create(@RequestBody ProductModelInput productModelInput) {
+    public ResponseEntity<ProductRepresentationModel> create(@Valid @RequestBody ProductModelInput productModelInput) {
         ProductRepresentationModel productRepresentationModel = productAssembler.toModel(productRegisterService.create(productModelInput));
 
         URI location = URI.create(String.format("/products/%s", productRepresentationModel.getId()));
@@ -44,7 +45,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductRepresentationModel> update(@PathVariable UUID id, @RequestBody ProductModelInput productModelInput) {
+    public ResponseEntity<ProductRepresentationModel> update(@PathVariable UUID id, @Valid @RequestBody ProductModelInput productModelInput) {
         return ResponseEntity.ok(productAssembler.toModel(productRegisterService.update(id, productModelInput)));
     }
 
