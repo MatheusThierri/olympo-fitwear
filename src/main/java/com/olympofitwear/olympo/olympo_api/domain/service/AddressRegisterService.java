@@ -2,7 +2,7 @@ package com.olympofitwear.olympo.olympo_api.domain.service;
 
 import com.olympofitwear.olympo.olympo_api.api.model.input.AddressModelInput;
 import com.olympofitwear.olympo.olympo_api.api.assembler.AddressAssembler;
-import com.olympofitwear.olympo.olympo_api.domain.exception.DomainException;
+import com.olympofitwear.olympo.olympo_api.domain.exception.EntityNotFoundException;
 import com.olympofitwear.olympo.olympo_api.domain.model.Address;
 import com.olympofitwear.olympo.olympo_api.domain.model.Client;
 import com.olympofitwear.olympo.olympo_api.domain.repository.AddressRepository;
@@ -67,10 +67,10 @@ public class AddressRegisterService {
     }
 
     private Address findValidAddress(UUID clientId, UUID addressId) {
-        Address address = addressRepository.findById(addressId).orElseThrow(() -> new DomainException("Address not found with ID: " + addressId));
+        Address address = addressRepository.findById(addressId).orElseThrow(() -> new EntityNotFoundException("Address not found"));
 
         if (!address.getClient().getId().equals(clientId)) {
-            throw new DomainException("Address not found for this client with ID: " + clientId);
+            throw new EntityNotFoundException("Address not found for this client");
         }
 
         return address;

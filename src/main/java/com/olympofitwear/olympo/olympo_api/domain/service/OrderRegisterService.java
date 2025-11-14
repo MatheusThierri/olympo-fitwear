@@ -2,7 +2,7 @@ package com.olympofitwear.olympo.olympo_api.domain.service;
 
 import com.olympofitwear.olympo.olympo_api.api.model.input.OrderModelInput;
 import com.olympofitwear.olympo.olympo_api.api.assembler.OrderAssembler;
-import com.olympofitwear.olympo.olympo_api.domain.exception.DomainException;
+import com.olympofitwear.olympo.olympo_api.domain.exception.EntityNotFoundException;
 import com.olympofitwear.olympo.olympo_api.domain.model.Client;
 import com.olympofitwear.olympo.olympo_api.domain.model.Order;
 import com.olympofitwear.olympo.olympo_api.domain.model.OrderStatus;
@@ -69,10 +69,10 @@ public class OrderRegisterService {
     }
 
     private Order findValidOrder(UUID clientId, UUID orderId) {
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new DomainException("Order not found with ID: " + orderId));
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Order not found"));
 
         if (!order.getClient().getId().equals(clientId)) {
-            throw new DomainException("Order not found for this client with ID: " + clientId);
+            throw new EntityNotFoundException("Order not found for this client");
         }
 
         return order;

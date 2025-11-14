@@ -2,7 +2,7 @@ package com.olympofitwear.olympo.olympo_api.domain.service;
 
 import com.olympofitwear.olympo.olympo_api.api.model.input.CategoryModelInput;
 import com.olympofitwear.olympo.olympo_api.api.assembler.CategoryAssembler;
-import com.olympofitwear.olympo.olympo_api.domain.exception.DomainException;
+import com.olympofitwear.olympo.olympo_api.domain.exception.EntityNotFoundException;
 import com.olympofitwear.olympo.olympo_api.domain.model.Category;
 import com.olympofitwear.olympo.olympo_api.domain.repository.CategoryRepository;
 import lombok.AllArgsConstructor;
@@ -18,7 +18,7 @@ public class CategoryRegisterService {
     private final CategoryAssembler categoryAssembler;
 
     public Category findById(UUID id) {
-        return categoryRepository.findById(id).orElseThrow(() -> new DomainException("Category not found with ID: " + id));
+        return categoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Category not found"));
     }
 
     @Transactional
