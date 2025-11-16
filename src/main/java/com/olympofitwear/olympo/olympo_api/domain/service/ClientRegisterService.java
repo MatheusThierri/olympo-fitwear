@@ -27,6 +27,10 @@ public class ClientRegisterService {
         Client client = clientAssembler.toEntity(clientModelInput);
 
         validEmail(client);
+        validCpf(client);
+        validPassword(client);
+
+        normalizeClient(client);
 
         return clientRepository.saveAndFlush(client);
     }
@@ -38,6 +42,10 @@ public class ClientRegisterService {
         clientAssembler.toExistingClient(clientModelInput, client);
 
         validEmail(client);
+        validCpf(client);
+        validPassword(client);
+
+        normalizeClient(client);
 
         return clientRepository.saveAndFlush(client);
     }
@@ -54,6 +62,25 @@ public class ClientRegisterService {
 
         if(emailExists) {
             throw new DomainException("Email already taken");
+        }
+    }
+
+    public void validCpf(Client client) {
+        boolean cpfExists = clientRepository.findClientByCpf(client.getCpf()).filter(p -> !p.equals(client)).isPresent();
+
+        if(cpfExists) {
+            throw new DomainException("CPF already taken");
+        }
+    }
+
+    public void normalizeClient(Client client) {
+        client.setCpf(client.getCpf().replace(".", "").replace("-", ""));
+        client.setPhone(client.getPhone().replaceAll("\\D", "")); // Only numbers
+    }
+
+    public void validPassword(Client client) {
+        if(!client.getPassword().matches("^(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).+$")) {
+            throw new DomainException("Invalid password: it must include at least one uppercase letter and one special character.");
         }
     }
 }

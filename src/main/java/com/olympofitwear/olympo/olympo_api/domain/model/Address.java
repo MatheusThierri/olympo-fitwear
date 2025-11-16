@@ -22,6 +22,6 @@ public class Address {
     private String number;
     private String cep;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Client client;
 }

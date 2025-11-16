@@ -39,7 +39,6 @@ public class AddressRegisterService {
         Client client = clientRegisterService.findById(id);
 
         Address address = addressAssembler.toEntity(addressModelInput);
-        client.getAddresses().add(address);
         address.setClient(client);
 
         return addressRepository.saveAndFlush(address);
